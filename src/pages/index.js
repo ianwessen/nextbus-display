@@ -1,21 +1,41 @@
-import React from "react"
-import { Link } from "gatsby"
+import React, { useState, useEffect } from 'react'
 
-import Layout from "../components/layout"
-import Image from "../components/image"
-import SEO from "../components/seo"
+import StopDisplay from '../components/StopDisplay/StopDisplay'
 
-const IndexPage = () => (
-  <Layout>
-    <SEO title="Home" />
-    <h1>Hi people</h1>
-    <p>Welcome to your new Gatsby site.</p>
-    <p>Now go build something great.</p>
-    <div style={{ maxWidth: `300px`, marginBottom: `1.45rem` }}>
-      <Image />
-    </div>
-    <Link to="/page-2/">Go to page 2</Link>
-  </Layout>
-)
+import CONSTANTS from '../utilities/constants'
+import useInterval from '../utilities/useInterval'
+
+import '../stylesheets/index.scss'
+import RefreshCountdown from '../components/RefreshCountdown/RefreshCountdown'
+
+const IndexPage = () => {
+  const [predictions, setPredictions] = useState([])
+  const [refreshCounter, refresh] = useState(0)
+
+  useInterval(() => {
+    refresh(refreshCounter + 1)
+  }, 10000)
+
+  useEffect(() => {
+    fetch(CONSTANTS.API_URL)
+      .then(response => response.json())
+      .then(predictionData => {
+        const InboundPrediction = predictionData.predictions.direction.find(
+          direction => direction.title === CONSTANTS.ROUTE_DIRECTION
+        )
+        const firstThreePredictions = InboundPrediction.prediction.slice(0, 3)
+        setPredictions(firstThreePredictions)
+      })
+  }, [refreshCounter])
+
+  return (
+    <section>
+      <h1>5 Fulton</h1>
+      <h2>{CONSTANTS.ROUTE_DIRECTION}</h2>
+      <RefreshCountdown />
+      <StopDisplay title="Baker & McAllister" predictions={predictions} />
+    </section>
+  )
+}
 
 export default IndexPage

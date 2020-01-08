@@ -1,0 +1,15 @@
+.bus-prediction {
+  border: 1px solid #ccc;
+  padding: 20px;
+  margin-bottom: 10px;
+
+  &__minutes {
+    display: block;
+    font-size: 18px;
+  }
+
+  &__vehicle {
+    font-size: 14px;
+    color: #aaa;
+  }
+}
