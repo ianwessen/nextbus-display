@@ -20,10 +20,11 @@ const IndexPage = () => {
     fetch(CONSTANTS.API_URL)
       .then(response => response.json())
       .then(predictionData => {
-        const InboundPrediction = predictionData.predictions.direction.find(
-          direction => direction.title === CONSTANTS.ROUTE_DIRECTION
-        )
-        const firstThreePredictions = InboundPrediction.prediction.slice(0, 3)
+        const isInbound = direction => direction.title.startsWith('Inbound')
+        const inboundPredictions = predictionData.predictions.direction.find(
+          isInbound
+        ).prediction
+        const firstThreePredictions = inboundPredictions.slice(0, 3)
         setPredictions(firstThreePredictions)
       })
   }, [refreshCounter])
